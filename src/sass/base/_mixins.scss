@@ -1,0 +1,443 @@
+/*********/
+/* Mixins
+/*********/
+
+// Useful mixins downloaded from https://bitbucket.org/calebzahnd/sass-mixins
+
+
+//The ol' cover EVERYTHING block. Handy.
+@mixin coverer() {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+// A darn fine way to center something
+@mixin centerer() {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+@mixin deCenterer() {
+	top: 0;
+	left: 0;
+	transform: translate(0, 0);	
+}
+
+//Vertical align in 3 lines of css.
+@mixin vertical-align() {
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+//Horizontal align in 3 lines of css.
+@mixin horizontal-align() {
+	position: absolute;
+	left: 50%;
+	transform: translateX(-50%);	
+}
+
+@mixin word-wrap() {
+	word-break:     break-word;
+	-webkit-hyphens: auto;
+	-moz-hyphens:    auto;
+	hyphens:         auto;
+}
+
+@mixin ellipsis() {
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+@mixin gradient($height: 100px, $color: #000) {
+	&:after {
+		content: "";
+		position: absolute;
+		left:0;
+		bottom: -1px;
+		height: $height;
+		width: 100%;
+		background: linear-gradient(to bottom, rgba($color, 0) 0%,rgba($color,0.65) 100%);
+	}
+}
+
+@mixin opacity($opacity) {
+	opacity: $opacity;
+	$opacity-ie: $opacity * 100;
+	filter: alpha(opacity=$opacity-ie); //IE8
+}
+
+@function black($opacity) {
+	@return rgba(black, $opacity)
+}
+@function white($opacity) {
+	@return rgba(white, $opacity)
+}
+
+// There's a lot of different clearfix hacks out there on the web. This one (http://nicolasgallagher.com/micro-clearfix-hack) I've found it to be the most solid one. Works in IE6 and up.
+@mixin clearfix {
+	*zoom: 1;
+	&:before, &:after {
+	    content: " ";
+	    display: table;
+ 	}
+	&:after {
+		clear: both;
+	}
+}
+
+%clearfix {
+	@include clearfix();
+}
+.clearfix {
+	@include clearfix();
+}
+
+//Iconfont
+@mixin iconfont($content: " ", $font-size: inherit ) {
+	font-family: $font-iconfont;
+	speak: none;
+	font-style: normal;
+	font-weight: normal;
+	font-variant: normal;
+	text-transform: none;
+	line-height: 1;
+	content: $content;
+	font-size: $font-size;
+	
+	/* Better Font Rendering =========== */
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+@mixin object-fit($width:100%, $height:100%) {
+	object-fit: cover;
+	object-position: center center;
+	width:$width;
+	height:$height;
+}
+.object-fit {
+	@include object-fit();
+}
+
+//Good way to hide something but have it still be accessible to screen-readers
+@mixin visuallyhidden {
+	position: absolute;
+	margin: -1px;
+	padding: 0;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0 0 0 0);
+	clip: rect(0, 0, 0, 0);
+}
+
+%isVisuallyHidden {
+	@include visuallyhidden();
+}
+
+
+@mixin videoplayer() {
+	position: relative;
+	display: block;
+	cursor: pointer;
+	@include font-size(0px);
+	line-height: 1;
+	
+	&::before {
+		content:'';
+		position: absolute;
+		top:0;
+		right: 0;
+		bottom: 0;
+		left:0;
+		background: rgba($black, 0.6);
+	}
+	
+	&::after {
+		@include iconfont($icon-video-play, 44px);
+		@include centerer();
+		color: $white;
+	}
+}
+
+@mixin videoplayerButton($size: 50px, $bgcolor: $white, $fgcolor: $orange) {
+	@include font-size(0px);	
+	position: relative;
+	display: block;
+	cursor: pointer;
+	line-height: 1;
+	&::before {
+		@include centerer();
+		content:'';
+		position: absolute;
+		width: $size;
+		height: $size;
+		background: rgba($bgcolor, 0.6);
+		border-radius: 50%;
+	}
+	
+	&::after {
+		@include iconfont($icon-video-play, ($size/2.5));
+		@include centerer();
+		color: $fgcolor;
+		margin-left: ($size/20);
+	}
+}
+
+//Uses the Sass-Map defined in partials/variables.scss
+@mixin z-index($level: ground) {
+	z-index: map-get($z-index, $level);
+}
+
+
+//Custom breakpoint names
+@mixin screen-xs {
+	@media only screen and (min-width: map-get($grid-breakpoints, xs)) {
+		@content;
+	}
+}
+@mixin screen-sm {
+	@media only screen and (min-width: map-get($grid-breakpoints, sm)) {
+		@content;
+	}
+}
+@mixin screen-md {
+	@media only screen and (min-width: map-get($grid-breakpoints, md)) {
+		@content;
+	}
+}
+@mixin screen-lg {
+	@media only screen and (min-width: map-get($grid-breakpoints, lg)) {
+		@content;
+	}
+}
+@mixin screen-xl {
+	@media only screen and (min-width: map-get($grid-breakpoints, xl)) {
+		@content;
+	}
+}
+
+
+
+@mixin screen-xs-max {
+	@media only screen and (max-width: (map-get($grid-breakpoints, sm) - 1)) {
+		@content;
+	}
+}
+@mixin screen-sm-max {
+	@media only screen and (max-width: (map-get($grid-breakpoints, md) - 1)) {
+		@content;
+	}
+}
+@mixin screen-md-max {
+	@media only screen and (max-width: (map-get($grid-breakpoints, lg) - 1)) {
+		@content;
+	}
+}
+@mixin screen-lg-max {
+	@media only screen and (max-width: (map-get($grid-breakpoints, xl) - 1)) {
+		@content;
+	}
+}
+
+
+
+@mixin screen-xs-only {
+	@media only screen and (min-width: map-get($grid-breakpoints, xs)) and (max-width: (map-get($grid-breakpoints, sm) - 1)) {
+		@content;
+	}
+}
+@mixin screen-sm-only {
+	@media only screen and (min-width: map-get($grid-breakpoints, sm)) and (max-width: (map-get($grid-breakpoints, md) - 1)) {
+		@content;
+	}
+}
+@mixin screen-md-only {
+	@media only screen and (min-width: map-get($grid-breakpoints, md)) and (max-width: (map-get($grid-breakpoints, lg) - 1)) {
+		@content;
+	}
+}
+@mixin screen-lg-only {
+	@media only screen and (min-width: map-get($grid-breakpoints, lg)) and (max-width: (map-get($grid-breakpoints, xl) - 1)) {
+		@content;
+	}
+}
+@mixin screen-xl-only {
+	@include  screen-xl {
+		@content;
+	}
+}
+
+@mixin make-container {
+	@include clearfix();
+	position: relative;
+	max-width: $container-width;
+	margin: 0 auto;
+}
+
+@mixin row($screen: "sm") {
+	@include clearfix();
+	@if $screen == "xs" {
+		@include screen-xs {
+			margin-left: -15px;
+			margin-right: -15px;		
+		}
+	}
+	@if $screen == "sm" {
+		@include screen-sm {
+			margin-left: -15px;
+			margin-right: -15px;		
+		}
+	}
+	@if $screen == "md" {
+		@include screen-md {
+			margin-left: -15px;
+			margin-right: -15px;
+		}
+	}
+	@if $screen == "lg" {
+		@include screen-lg {
+			margin-left: -15px;
+			margin-right: -15px;			
+		}
+	}
+	@if $screen == "xl" {
+		@include screen-xl {
+			margin-left: -15px;
+			margin-right: -15px;			
+		}
+	}				
+}
+
+@mixin gutter($location, $amount: 1) {
+	
+	$margin: floor($grid-gutter-width * $amount);
+	
+	@if $location == "all" {
+		margin: $margin;
+	}
+	@if $location == "top" {
+		margin-top: $margin;
+	}
+	@if $location == "right" {
+		margin-right: $margin;
+	}
+	@if $location == "bottom" {
+		margin-bottom: $margin;
+	}
+	@if $location == "left" {
+		margin-left: $margin;
+	}
+	@if $location == "internal" {
+		padding: $margin;
+	}
+	@if $location == "internal-top" {
+		padding-top: $margin;
+	}
+	@if $location == "internal-right" {
+		padding-right: $margin;
+	}
+	@if $location == "internal-bottom" {
+		padding-bottom: $margin;
+	}
+	@if $location == "internal-left" {
+		padding-left: $margin;
+	}
+}
+
+//For Simple Columns only
+@mixin make-xs-column($count) {
+	@include screen-xs {
+		@include span($count);
+	}
+}
+@mixin make-sm-column($count) {
+	@include screen-sm {
+		@include span($count);
+	}
+}
+@mixin make-md-column($count) {
+	@include screen-md {
+		@include span($count);
+	}
+}
+@mixin make-lg-column($count) {
+	@include screen-lg {
+		@include span($count);
+	}
+}
+@mixin make-xl-column($count) {
+	@include screen-xl {
+		@include span($count);
+	}
+}
+//For Simple Colunn Offset Only
+@mixin make-xs-column-offset($offset-count) {
+	@include screen-xs {
+		@include push($offset-count);
+	}
+}
+@mixin make-sm-column-offset($offset-count) {
+	@include screen-sm {
+		@include push($offset-count);
+	}
+}
+@mixin make-md-column-offset($offset-count) {
+	@include screen-md {
+		@include push($offset-count);
+	}
+}
+@mixin make-lg-column-offset($offset-count) {
+	@include screen-lg {
+		@include push($offset-count);
+	}
+}
+@mixin make-xl-column-offset($offset-count) {
+	@include screen-xl {
+		@include push($offset-count);
+	}
+}
+
+@function parseInt($n) {
+  @return $n / ($n * 0 + 1);
+}
+
+@mixin font-size($values) {
+  $px : ();
+  $rem: ();
+
+  @each $value in $values {
+
+    @if $value == 0 or $value == auto {
+      $px : append($px , $value);
+      $rem: append($rem, $value);
+    }
+
+    @else {
+      $unit: unit($value);   
+      $val: parseInt($value);
+
+      @if $unit == "px" { 
+        $px : append($px,  $value);
+        $rem: append($rem, ($val / 10 + rem));
+      }
+
+      @if $unit == "rem" {
+        $px : append($px,  ($val * 10 + px));
+        $rem: append($rem, $value);
+      }
+    }
+  }
+
+  @if $px == $rem {    
+    font-size: $px; 
+  } @else {
+    font-size: $px; 
+    font-size: $rem;
+  }
+}

@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+<head>
+	<title>Visitor Window</title>
+	<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+	<div class="chat-window">
+		<ul id="messages" class="message-window"></ul>
+		<form id="editNickname" class="" action="">
+			<input id="nickname" autocomplete="off" placeholder="Enter Your Name" />
+			<button>Submit</button>
+		</form>			
+		<form id="sendMessage" class="visitor-message hidden" action="">
+			<input id="messageField" autocomplete="off" placeholder="Message" />
+			<button>Send</button>
+		</form>
+	</div>
+
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="/js/scripts.js"></script>
+	<script>
+	$(document).ready(function(){
+		visitor.init();
+	});
+	</script>
+</body>
+</html>

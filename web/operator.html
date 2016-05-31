@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+	<title>Operator Window</title>
+	<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+
+	
+	<div class="chat-window">
+		<ul id="messages" class="message-window"></ul>
+		<form id="sendMessage" action="">
+			<input id="messageField" autocomplete="off" />
+			<button>Send</button>
+		</form>
+	</div>
+	<div class="visitors-window">
+		<p>Visitors</p>
+		<ul id="visitors" class="visitors-list"></ul>
+	</div>
+
+
+
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+	<script src="/js/scripts.js"></script>
+	<script>
+		$(document).ready(function(){
+			operator.init();		
+		});	
+	</script>
+</body>
+</html>

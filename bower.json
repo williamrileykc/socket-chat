@@ -1,0 +1,14 @@
+{
+  "name": "install",
+  "version": "0.1.0",
+  "homepage": "***",
+  "private": true,
+  "authors": [
+    "Bill Riley"
+  ],
+  "description": "",
+  "dependencies": {
+    "jquery": "~2.2.0",
+    "normalize-scss": "~3.0.3"
+  }
+}

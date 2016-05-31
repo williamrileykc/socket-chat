@@ -1,0 +1,92 @@
+// Import a scary warning for those poor fools trying to edit the .css
+@import 'base/warning';
+
+@import "../vendor/normalize-scss/_normalize.scss";
+
+// Variables & Mixins
+@import 'base/mixins';
+
+$gray: #ccc;
+
+// Styles
+/* apply a natural box layout model to all elements, but allowing components to change */
+html {
+	box-sizing: border-box;
+	font-size:62.5%; //62.5% is recommended to we can easily use REM values and generate a px fallback.
+}
+*, *:before, *:after {
+	box-sizing: inherit;
+}
+
+body { 
+	font: 13px Helvetica, Arial; 
+}
+.chat-window {
+	width: 350px;
+	float: left;
+}
+form { 
+	background-color: $gray; 
+	padding: 0px;
+	// position: fixed; 
+	bottom: 0; 
+	width: 100%;
+	input { 
+		padding: 10px; 
+		width: 80%; 
+		margin-right: 0; 
+	}
+	button { 
+		width: 17%; 
+		background: rgb(130, 224, 255); 
+		border: none; 
+		padding: 10px; 
+	}	 
+}
+
+.message-window {
+	display: block;
+	height: 200px;
+	overflow-y: scroll;
+	list-style-type: none; 
+	margin: 0; 
+	padding: 0; 
+	li { 
+		padding: 5px 10px; 
+		text-align: left;
+		&.me { 
+			text-align: right;
+			background: #eee; 
+		}		
+	}
+}
+.visitors-window {
+	width: 350px;
+	float: left;
+	margin-left: 100px;
+}
+.visitors-list {
+	border: 1px solid $gray;	
+	display: block;
+	min-height: 200px;
+	overflow-y: scroll;
+	list-style-type: none; 
+	margin: 0; 
+	padding: 0; 
+	li { 
+		padding: 5px 10px; 
+		text-align: left;	
+		&:hover {
+			cursor: pointer;
+		}
+		&.active {
+			background-color: $gray;
+		}	
+	}	
+}
+.visitor-status {
+	color: $gray;
+}
+.hidden {
+	display: none;
+}

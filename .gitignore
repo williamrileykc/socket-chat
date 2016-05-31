@@ -1,0 +1,62 @@
+# Boost generated files #
+#########################
+htdocs/cache/*
+
+# Composer generated files #
+############################
+composer.phar
+vendor/*
+
+# Gulp generated files #
+#####################
+node_modules/*
+bower_components/*
+
+# Other generated Files #
+###################
+templates/assets/styles
+templates/assets/scripts
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+
+
+
+# SASS #
+########
+.sass-cache
+*.css.map
+*.map
+
+
+
+
+# Log files #
+#############
+logs/*
+
+# Nodejs logs #
+##############
+npm-debug.log
+
+
+
+
+# IDEs #
+########
+.buildpath
+.idea
+.project
+.settings
+*.esproj
+*.komodoproject
+*.komodotools
+nbproject
