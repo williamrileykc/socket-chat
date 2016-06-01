@@ -3,11 +3,6 @@ var main = {
 	operatorConnected: false,
 	visitorCount: 0,
 	initialize: function () {
-		main.refreshListeners();
-	},
-	refreshListeners: function() {
-		main.removeListeners();
-		main.addListeners();
 	},
 	testForValidMessage: function(text){
 		if(text != '' && text != undefined){
@@ -19,7 +14,11 @@ var main = {
 	messages: function(message, who){
 		if(main.testForValidMessage(message) == true){
 			$('#messages').append($('<li class="'+who+'">').text(message));
+			main.scrollFix('#messages');
 		}		
+	},
+	scrollFix: function(element) {
+		$(element).scrollTop(($(element).height()*2));
 	}
 }
 
@@ -32,8 +31,14 @@ var visitor = {
 	init: function() {
 		visitor.Socket = io();
 		visitor.Socket.on('connect', function(){
-			
 		});
+		visitor.Socket.on('operator-connected', function(data){
+			main.operatorConnected = true;
+			visitor.visitorQueueUpdate(data);
+		});	
+		visitor.Socket.on('operator-disconnected', function(){
+			main.operatorConnected = false;
+		});				
 		visitor.Socket.on('message-to-visitor', function(msg){
 			main.messages(msg, 'them');		
 		});
@@ -42,9 +47,9 @@ var visitor = {
 		});	
 		visitor.Socket.on('visitor-connected', function(data){
 			visitor.visitorWelcome(data);
-		});			
-		visitor.Socket.on('visitor-active', function(data){
-			visitor.activateCurrentVisitor(data);
+		});		
+		visitor.Socket.on('you-were-disconnected', function(data){
+			visitor.visitorDisconnected(data);
 		});			
 		visitor.Socket.on('visitor-queue-update', function(data){
 			visitor.visitorQueueUpdate(data);
@@ -67,7 +72,6 @@ var visitor = {
 		var nickname = $('#nickname').val().trim();
 		if(nickname != ''){
 			$('#editNickname').addClass('hidden');
-			$('#sendMessage').removeClass('hidden');
 			visitor.Socket.emit('visitor-connected', nickname);
 		};
 		return false;
@@ -78,36 +82,43 @@ var visitor = {
 		$('#messages').append($('<li class="visitor-status">'));
 		if(data.operator != null){
 			main.operatorConnected = true;
-		}		
-		visitor.visitorStatusUpdate(main.visitorCount);
+		}	
+		if($('.modal').length > 0 && $('.modal').hasClass('visible')){
+			$('.modal').removeClass('visible');
+		};
+	},
+	testForOperator: function(){
+
 	},
 	visitorQueueUpdate: function(data){
-		visitor.visitorStatusUpdate(data.position);
-	},
-	visitorStatusUpdate: function(number){
-		console.log('number is '+number);
 		var operatorMessage = '';
+		var number = data.position;
 		//Test for operator
 		if(main.operatorConnected == true){
 			operatorMessage = 'An operator is connected. ';
+			if(number == 0){
+				$('#chat-window--visitor').addClass('chatting');
+				$('.visitor-status').text(operatorMessage + 'How can we help you?');
+			};
+			if(number == 1){
+				$('.visitor-status').text(operatorMessage + 'You are currently next in line');
+			};
+			if(number > 1){
+				$('.visitor-status').text(operatorMessage + 'You are currently number '+ (main.visitorCount - 1) +' in line');
+			};			
+		} else {
+			$('.visitor-status').text('There are currently no operators connected');
 		};
-		if(number == 1){
-			$('.visitor-status').text(operatorMessage + 'How can we help you?');
-		};
-		if(number == 2){
-			$('.visitor-status').text(operatorMessage + 'You are currently next in line');
-		};
-		if(number > 2){
-			$('.visitor-status').text(operatorMessage + 'You are currently number '+ (main.visitorCount - 1) +' in line');
-		};
-	},
-	activateCurrentVisitor: function(data){
-		visitor.activeVisitor = true;
+
 	},
 	messageToOperator: function() {
 		visitor.Socket.emit('message-to-operator', $('#messageField').val());
 		$('#messageField').val('');
 		return false;		
+	},
+	visitorDisconnected: function(data){
+		$('#chat-window--visitor').removeClass('chatting');
+		$('#messages').append($('<li class="visitor-status">').text('You have been disconnected, please refresh to reconnect'));
 	}
 
 }
@@ -125,6 +136,12 @@ var operator = {
 			main.operatorConnected = true;
 			operator.Socket.emit('operator-connected');
 		});
+		operator.Socket.on('operator-connected', function(clients){
+			operator.visitorListPopulate(clients);
+		});
+		operator.Socket.on('operator-disconnected', function(){
+			main.operatorConnected = false;
+		});		
 		operator.Socket.on('message-to-visitor', function(msg){
 			main.messages(msg, 'me');		
 		});
@@ -140,14 +157,14 @@ var operator = {
 		operator.refreshListeners();
 	},
 	addListeners: function() {
-		// $('#visitors li').on('click', operator.visitorSelect);
 		$('#editVisitors').on('submit', operator.visitorNickname);
 		$('#sendMessage').on('submit', operator.messageToVisitor);
+		$('.visitors-window .window--title').on('click', operator.visitorWindowToggle);
 	},
 	removeListeners: function() {
-		// $('#visitors li').off('click', operator.visitorSelect);
 		$('#editVisitors').off('submit', operator.visitorNickname);
 		$('#sendMessage').off('submit', operator.messageToVisitor);
+		$('.visitors-window .window--title').off('click', operator.visitorWindowToggle);
 	},	
 	refreshListeners: function() {
 		operator.removeListeners();
@@ -155,8 +172,14 @@ var operator = {
 	},	
 	visitorConnect: function(visitorData) {
 		$('#visitors').append($('<li data-id="'+visitorData.ID+'" data-nickname="'+visitorData.Nickname+'">').text(visitorData.Nickname));
+		main.scrollFix('#visitors');
 		operator.refreshListeners();
 		operator.updateActiveVisitor();
+	},
+	visitorListPopulate: function(clients){
+		$(clients).each(function(i, e){
+			operator.visitorConnect(e);
+		});
 	},
 	socketDisconnect: function(data) {
 		$('#visitors li').each(function(i, e){
@@ -172,25 +195,40 @@ var operator = {
 		$('#visitors li').removeClass('active');
 		$('#visitors li:first-child').addClass('active');
 		operator.activeVisitor = $('#visitors li.active').data('id');
+		var activeVisitorNickname = $('#visitors li.active').data('nickname');
+		$('#messages').empty();
+		if(activeVisitorNickname != undefined){
+			$('#messages').append($('<li class="operator-status">').text('You are now connected to '+activeVisitorNickname));
+		}
 	},
 	visitorSelect: function() {
 		$('#visitors li').removeClass('active');
 		$(this).addClass('active');
 		operator.activeVisitor = $(this).data('id');
 	},
-	visitorNickname: function(e){
-		$('#visitors li.active').text($('#nickname').val());
-		$('#nickname').val('');
-		return false;
-	},
 	messageToVisitor: function(){
 		var message = $('#messageField').val();
-		operator.Socket.emit('message-to-visitor', {
-			"username": operator.activeVisitor,
-			"message": message
-		});
-		$('#messageField').val('');
+		if(message != '!next'){
+			operator.Socket.emit('message-to-visitor', {
+				"username": operator.activeVisitor,
+				"message": message
+			});
+			$('#messageField').val('');			
+		};
+		if(message == '!next'){
+			operator.Socket.emit('disconnect-visitor', {
+				"ID": operator.activeVisitor
+			});
+			$('#messageField').val('');	
+		}
 		return false;
+	},
+	visitorWindowToggle: function() {
+		var el = $(this),
+		elTarget = $(el).parent('.visitors-window');
+		if($(elTarget).length > 0){
+			$(elTarget).toggleClass('open');
+		};
 	}
 }
 

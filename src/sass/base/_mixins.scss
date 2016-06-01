@@ -350,59 +350,6 @@
 	}
 }
 
-//For Simple Columns only
-@mixin make-xs-column($count) {
-	@include screen-xs {
-		@include span($count);
-	}
-}
-@mixin make-sm-column($count) {
-	@include screen-sm {
-		@include span($count);
-	}
-}
-@mixin make-md-column($count) {
-	@include screen-md {
-		@include span($count);
-	}
-}
-@mixin make-lg-column($count) {
-	@include screen-lg {
-		@include span($count);
-	}
-}
-@mixin make-xl-column($count) {
-	@include screen-xl {
-		@include span($count);
-	}
-}
-//For Simple Colunn Offset Only
-@mixin make-xs-column-offset($offset-count) {
-	@include screen-xs {
-		@include push($offset-count);
-	}
-}
-@mixin make-sm-column-offset($offset-count) {
-	@include screen-sm {
-		@include push($offset-count);
-	}
-}
-@mixin make-md-column-offset($offset-count) {
-	@include screen-md {
-		@include push($offset-count);
-	}
-}
-@mixin make-lg-column-offset($offset-count) {
-	@include screen-lg {
-		@include push($offset-count);
-	}
-}
-@mixin make-xl-column-offset($offset-count) {
-	@include screen-xl {
-		@include push($offset-count);
-	}
-}
-
 @function parseInt($n) {
   @return $n / ($n * 0 + 1);
 }

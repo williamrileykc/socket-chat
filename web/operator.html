@@ -8,7 +8,8 @@
 
 
 	
-	<div class="chat-window">
+	<div id="chat-window--operator" class="chat-window">
+		<p class="window--title">Active Chat</p>
 		<ul id="messages" class="message-window"></ul>
 		<form id="sendMessage" action="">
 			<input id="messageField" autocomplete="off" />
@@ -16,7 +17,7 @@
 		</form>
 	</div>
 	<div class="visitors-window">
-		<p>Visitors</p>
+		<p class="window--title">Visitors</p>
 		<ul id="visitors" class="visitors-list"></ul>
 	</div>
 
@@ -26,9 +27,9 @@
 	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
 	<script src="/js/scripts.js"></script>
 	<script>
-		$(document).ready(function(){
-			operator.init();		
-		});	
+	$(document).ready(function(){
+		operator.init();		
+	});	
 	</script>
 </body>
 </html>

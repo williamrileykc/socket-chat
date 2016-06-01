@@ -518,13 +518,61 @@ html
 body
 {
     font: 13px Helvetica, Arial;
+
+    background-color: #797979;
+}
+
+.modal
+{
+    position: fixed;
+    z-index: 1000;
+
+    display: none;
+
+    width: 100%;
+    height: 100%;
+
+    background: rgba(0, 0, 0, .8);
+}
+.modal form
+{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    width: 80%;
+    height: 80px; 
+
+    transform: translate(-50%, -50%);
+
+    background-color: transparent;
+}
+.modal.visible
+{
+    display: block;
 }
 
 .chat-window
 {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    left: 50%;
+
     float: left; 
 
-    width: 350px;
+    width: 80%;
+
+    transform: translate(-50%, -50%);
+
+    background-color: #eaeaea;
+}
+
+.window--title
+{
+    font-weight: bold; 
+
+    text-align: center;
 }
 
 form
@@ -538,17 +586,26 @@ form
 }
 form input
 {
+    line-height: 14px;
+
     width: 80%;
-    margin-right: 0; 
+    margin-right: 0;
     padding: 10px;
+
+    border: 0;
 }
 form button
 {
-    width: 17%;
-    padding: 10px; 
+    line-height: 14px; 
 
+    float: right;
+
+    width: 17%;
+    padding: 10px;
+
+    color: #fff;
     border: none;
-    background: #82e0ff;
+    background: #dc8218;
 }
 
 .message-window
@@ -558,9 +615,12 @@ form button
 
     height: 200px;
     margin: 0;
-    padding: 0; 
+    padding: 0;
 
     list-style-type: none;
+
+    border: 1px solid #ccc; 
+    background-color: #fff;
 }
 .message-window li
 {
@@ -577,10 +637,53 @@ form button
 
 .visitors-window
 {
-    float: left;
+    position: absolute;
+    z-index: 100;
+    top: 0;
+    right: 0;
 
-    width: 350px;
-    margin-left: 100px;
+    width: 300px;
+
+    border: 2px solid #fff; 
+    background-color: #eaeaea;
+}
+.visitors-window .visitors-list
+{
+    display: none;
+}
+.visitors-window p.window--title
+{
+    position: relative;
+}
+.visitors-window p.window--title:hover
+{
+    cursor: pointer;
+}
+.visitors-window p.window--title::after
+{
+    font-size: 20px;
+    font-weight: bold;
+
+    position: absolute;
+    top: 50%;
+    right: 20px; 
+
+    content: '+';
+    transform: translateY(-50%);
+
+    color: #dc8218;
+}
+.visitors-window.open
+{
+    border: 2px solid #dc8218;
+}
+.visitors-window.open .visitors-list
+{
+    display: block;
+}
+.visitors-window.open p.window--title::after
+{
+    content: '-';
 }
 
 .visitors-list
@@ -602,16 +705,13 @@ form button
 
     text-align: left;
 }
-.visitors-list li:hover
-{
-    cursor: pointer;
-}
 .visitors-list li.active
 {
     background-color: #ccc;
 }
 
-.visitor-status
+.visitor-status,
+.operator-status
 {
     color: #ccc;
 }
@@ -619,4 +719,14 @@ form button
 .hidden
 {
     display: none;
+}
+
+#chat-window--visitor .visitor-message
+{
+    display: none;
+}
+
+#chat-window--visitor.chatting .visitor-message
+{
+    display: block;
 }
